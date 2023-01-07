@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native'
-import React,{useState} from 'react'
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import React, { useState } from 'react'
+
 import {
   RFValue as rs,
   RFPercentage as rp,
@@ -11,9 +11,10 @@ import { StationContext } from '../Context/StationContext';
 
 
 const Loginscreen = ({ navigation }) => {
-  const { setUserDetails, IsAuthLoaded }=React.useContext(StationContext)
+  const { setUserDetails, IsAuthLoaded } = React.useContext(StationContext)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
 
 
 
@@ -22,52 +23,41 @@ const Loginscreen = ({ navigation }) => {
     return re.test(email);
   };
 
- 
+
   const loginProcess = async () => {
 
-     let em = validateEmail(email)
-     console.log(em, 'em')
-// let loginData = new FormData();
-//     loginData.append("email","eve.holt@reqres.in");
-//     loginData.append("password", "cityslicka");
-
-    // var urlencoded = new URLSearchParams();
-    // urlencoded.append("email", "eve.holt@reqres.in");
-    // urlencoded.append("password", "cityslicka");
+    let em = validateEmail(email)
+    console.log(em, 'em')
 
 
-   if(em===true){
-    try {
-      let response = await AUTH("post", "api/login", {
-        "email": email,
-        "password": password
-      });
 
-      console.log(response,'res');
-      if(response.token){
-        setUserDetails(response.token)
+    if (em === true) {
+
+      try {
+        setLoading(true)
+        let response = await AUTH("post", "api/login", {
+          "email": email,
+          "password": password
+        });
+
+        console.log(response, 'res');
+        if (response.token) {
+          setUserDetails(response.token)
+        }
+
+        if (response?.status == 400) {
+          Toast.show(response.data.error, Toast.LONG);
+        }
+        setLoading(false)
+        console.log(response, 'response')
+
+      } catch (err) {
+        setLoading(false)
+        console.log("login:err", err);
       }
 
-      if (response?.status==400){
-        Toast.show(response.data.error, Toast.LONG);
-      }
-      console.log(response,'response')
-      // if (response.code == 101) {
-      //   Toast.show(response.message, Toast.LONG);
-      // } else if (response.code == 102) {
-      //   Toast.show(response.message, Toast.LONG);
-      // } else {
-      //   navigation.navigate("Otp", {
-      //     mobile: phoneNo,
-      //   }),
-      //     Toast.show("Otp Generated Successful", Toast.LONG);
-      // }
-    } catch (err) {
-      console.log("login:err", err);
-     }
-  
-    }else{
-     Toast.show("Not a valid email", Toast.LONG);  
+    } else {
+      Toast.show("Not a valid email", Toast.LONG);
 
     }
   }
@@ -88,33 +78,37 @@ const Loginscreen = ({ navigation }) => {
         <Image source={require('../Assets/attherate.png')}
           resizeMode={'contain'} style={{ width: rs(16), height: rs(16), marginTop: -rs(5) }} />
         <TextInput
-
+          placeholder='Email'
+          placeholderTextColor={'grey'}
           onChange={(txt) => {
             setEmail(txt.nativeEvent.text)
             console.log(txt.nativeEvent.text)
 
 
           }}
-          style={{ width: rs(200), marginLeft: rs(20), fontFamily: 'Poppins-Bold', fontSize: rs(16), height: rs(50) }} />
+          style={{ width: rs(200), marginLeft: rs(20), fontFamily: 'Poppins-Bold', fontSize: rs(16), height: rs(50), color: '#000' }} />
       </View>
 
       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: rs(60) }}>
         <Image source={require('../Assets/lock.png')}
           resizeMode={'contain'} style={{ width: rs(16), height: rs(16), marginTop: -rs(5) }} />
         <TextInput
+          placeholder='Password'
+          placeholderTextColor={'grey'}
           onChange={(txt) => { setPassword(txt.nativeEvent.text) }}
-          secureTextEntry={true} style={{ width: rs(200), marginLeft: rs(20), fontFamily: 'Poppins-Bold', fontSize: rs(16), height: rs(50) }} />
+          secureTextEntry={true} style={{ width: rs(200), marginLeft: rs(20), fontFamily: 'Poppins-Bold', fontSize: rs(16), height: rs(50), color: '#000' }} />
       </View>
 
       <TouchableOpacity
         onPress={() => {
-           loginProcess()
-          console.log(email,'email')
+          loginProcess()
+          console.log(email, 'email')
         }}
         style={{ alignSelf: 'center', width: rs(120), height: rs(50), backgroundColor: 'red', flexDirection: 'row', alignItems: 'center', marginTop: rs(15), borderRadius: rs(25), justifyContent: 'center' }}>
-        <Text style={{ fontSize: rs(15), fontFamily: 'Poppins-Bold', color: '#fff', }}>
+        {loading ? <ActivityIndicator size={'small'} color={'#fff'} /> : <Text style={{ fontSize: rs(15), fontFamily: 'Poppins-Bold', color: '#fff', }}>
           Login
-        </Text>
+        </Text>}
+
         <Image source={require('../Assets/arrow.png')}
           resizeMode={'contain'} style={{ width: rs(16), height: rs(16), marginLeft: rs(5) }} />
       </TouchableOpacity>

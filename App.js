@@ -33,13 +33,13 @@ const LoginCheck = () => {
     );
   }
 
-    if (token) {
-      return <Homestack />
+  if (token) {
+    return <Homestack />
 
-    } else {
-      return <Loginstack />
-    }
-  
+  } else {
+    return <Loginstack />
+  }
+
 }
 
 

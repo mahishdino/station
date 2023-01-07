@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, TextInput } from 'react-native'
 import React from 'react'
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 import {
   RFValue as rs,
   RFPercentage as rp,
@@ -101,7 +101,9 @@ const Selectstation = ({ navigation }) => {
         <View style={{ width: '80%', backgroundColor: '#F0F4F5', marginTop: rs(100), height: 50, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', borderRadius: rs(10) }}>
           <Image source={require('../Assets/Search.png')}
             resizeMode={'contain'} style={{ width: rs(16), height: rs(16), marginLeft: rs(10) }} />
-          <TextInput onChangeText={(txt) => Search(txt)} placeholder='Search by ID, Name, City' style={{ width: rs(200), fontFamily: 'Poppins', fontSize: rs(14), height: rs(50), marginLeft: rs(10) }} />
+          <TextInput
+            placeholderTextColor={'#000'}
+            onChangeText={(txt) => Search(txt)} placeholder='Search by ID, Name, City' style={{ width: rs(200), fontFamily: 'Poppins', fontSize: rs(14), height: rs(50), marginLeft: rs(10), color: '#000' }} />
         </View>
 
 

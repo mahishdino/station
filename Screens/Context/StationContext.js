@@ -9,7 +9,6 @@ export const StationProvider = ({ children }) => {
 
     useEffect(() => {
         intializeToken();
-   
     }, []);
     const intializeToken = async () => {
         try {
@@ -19,8 +18,7 @@ export const StationProvider = ({ children }) => {
             });
             console.log("userInfo", value);
             if (value) {
-                // let userInfo = JSON.parse(value);
-                // setUserData(value);
+
                 setToken(value);
             }
             setIsAuthLoaded(true);
@@ -34,7 +32,7 @@ export const StationProvider = ({ children }) => {
             sharedPreferencesName: "mySharedPrefs",
             keychainService: "myKeychain",
         });
-   
+
         setToken(data);
         setIsAuthLoaded(true);
     };
@@ -45,7 +43,7 @@ export const StationProvider = ({ children }) => {
             keychainService: "myKeychain",
         });
         setToken(null);
-   
+
     };
 
 

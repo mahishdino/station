@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, TextInput, ActivityIndicator } from 'react-native'
-import React,{useEffect,useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import {
   RFValue as rs,
@@ -8,110 +8,110 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-let TrainLocalTimerData=null
+let TrainLocalTimerData = null
 
-const Detail = ({ navigation ,route}) => {
+const Detail = ({ navigation, route }) => {
   const [StationTimer, setStationTimer] = useState(null);
   const [StationData, setStationData] = useState(null);
   const [timerSeconds, settimerSeconds] = useState(0);
 
-  const GetTimer = async() =>{
-     try {
+  const GetTimer = async () => {
+    try {
 
-       let localStoredTimer = await AsyncStorage.getItem('@LOCAL_TIMER');
-       
-       let Train_id = ""
-       if (route.params && route.params.data && route.params.data.train_Number) {
-         setStationData(route.params.data)
-         Train_id = route.params.data.train_Number
-       } else {
-         navigation.goBack()
-       }
+      let localStoredTimer = await AsyncStorage.getItem('@LOCAL_TIMER');
 
-       if (localStoredTimer){
-         let parsedLocalStoredTimer = JSON.parse(localStoredTimer)
-         console.log(parsedLocalStoredTimer,"parsedLocalStoredTimer")
-         if (parsedLocalStoredTimer[Train_id]){
-           setStationTimer(parsedLocalStoredTimer[Train_id])
-           TrainLocalTimerData = parsedLocalStoredTimer[Train_id]
-         }
-       }
-     } catch (error) {
-      
-     }
-  }
+      let Train_id = ""
+      if (route.params && route.params.data && route.params.data.train_Number) {
+        setStationData(route.params.data)
+        Train_id = route.params.data.train_Number
+      } else {
+        navigation.goBack()
+      }
 
-useEffect(() => {
-  GetTimer()
-  const interval = setInterval(() => {
-    if (TrainLocalTimerData && TrainLocalTimerData.time){
-      let seconds = new Date().getTime() - TrainLocalTimerData.time
-      seconds =Math.round(seconds/1000)
-      settimerSeconds((prev)=>{return seconds})
+      if (localStoredTimer) {
+        let parsedLocalStoredTimer = JSON.parse(localStoredTimer)
+        console.log(parsedLocalStoredTimer, "parsedLocalStoredTimer")
+        if (parsedLocalStoredTimer[Train_id]) {
+          setStationTimer(parsedLocalStoredTimer[Train_id])
+          TrainLocalTimerData = parsedLocalStoredTimer[Train_id]
+        }
+      }
+    } catch (error) {
+
     }
-  }, 1000);
-  return () => {
-    TrainLocalTimerData=null
-    clearInterval(interval)
-  };
-
-}, [])
-
-const Store = async (timerdata,train_id,stationTimerdata) =>{
-try {
-  timerdata[train_id] = stationTimerdata
-  const jsonValue = JSON.stringify(timerdata)
-  console.log(jsonValue,"jsonValue")
-  await AsyncStorage.setItem('@LOCAL_TIMER', jsonValue)
-} catch (error) {
-  console.log(error, "err at Store") 
-}
-}
-
-const StoreStationTimer = async(id,data) =>{
-try {
-
-  let localStoredTimer = await AsyncStorage.getItem('@LOCAL_TIMER');
-  setStationTimer(data)
-  if (localStoredTimer){
-    let parsedLocalStoredTimer = JSON.parse(localStoredTimer)
-      Store(parsedLocalStoredTimer, id, data)
-
-  }else{
-    //first timer
-    Store({}, id, data)
   }
-  
-} catch (error) {
-  console.log(error,"err atStoreStationTimer")
-}
-}
 
-  const startStopTimer = () =>{
-    if (StationTimer && StationTimer.time){
+  useEffect(() => {
+    GetTimer()
+    const interval = setInterval(() => {
+      if (TrainLocalTimerData && TrainLocalTimerData.time) {
+        let seconds = new Date().getTime() - TrainLocalTimerData.time
+        seconds = Math.round(seconds / 1000)
+        settimerSeconds((prev) => { return seconds })
+      }
+    }, 1000);
+    return () => {
+      TrainLocalTimerData = null
+      clearInterval(interval)
+    };
+
+  }, [])
+
+  const Store = async (timerdata, train_id, stationTimerdata) => {
+    try {
+      timerdata[train_id] = stationTimerdata
+      const jsonValue = JSON.stringify(timerdata)
+      console.log(jsonValue, "jsonValue")
+      await AsyncStorage.setItem('@LOCAL_TIMER', jsonValue)
+    } catch (error) {
+      console.log(error, "err at Store")
+    }
+  }
+
+  const StoreStationTimer = async (id, data) => {
+    try {
+
+      let localStoredTimer = await AsyncStorage.getItem('@LOCAL_TIMER');
+      setStationTimer(data)
+      if (localStoredTimer) {
+        let parsedLocalStoredTimer = JSON.parse(localStoredTimer)
+        Store(parsedLocalStoredTimer, id, data)
+
+      } else {
+        //first timer
+        Store({}, id, data)
+      }
+
+    } catch (error) {
+      console.log(error, "err atStoreStationTimer")
+    }
+  }
+
+  const startStopTimer = () => {
+    if (StationTimer && StationTimer.time) {
       //stop timer
       let stationTimerData = {
-        time:null,
+        time: null,
       }
       StoreStationTimer(StationData.train_Number, stationTimerData)
-      TrainLocalTimerData=null
-    }else{
+      TrainLocalTimerData = null
+    } else {
       //start timer
-        let stationTimerData={
-          time:new Date().getTime(),
-        }
+      let stationTimerData = {
+        time: new Date().getTime(),
+      }
       TrainLocalTimerData = stationTimerData
-        StoreStationTimer(StationData.train_Number, stationTimerData)
+      StoreStationTimer(StationData.train_Number, stationTimerData)
     }
   }
 
-  if (StationData==null){
- return (<View style={{flex:1}}>
-<View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-  <ActivityIndicator size={"large"} color="red"/>
-</View>
- </View>)
-}
+  if (StationData == null) {
+    return (<View style={{ flex: 1 }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size={"large"} color="red" />
+      </View>
+    </View>)
+  }
 
   return (
     <>
@@ -130,11 +130,11 @@ try {
 
         </View>
 
-        <View style={{ width: '90%', marginTop: rs(100), height: 50, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', borderRadius: rs(10) }}>
-          <Text style={{ fontFamily: 'Poppins-Bold', fontSize: rs(15), color: '#000' }}>{StationTimer && StationTimer.time ? "Station Subscribed":"Subscribe Station"}</Text>
+        <View style={{ padding: rs(5), marginHorizontal: rs(20), marginTop: rs(100) }}>
+          <Text style={{ fontFamily: 'Poppins-Bold', fontSize: rs(20), color: '#000' }}>{StationTimer && StationTimer.time ? "Station Subscribed" : "Subscribe Station"}</Text>
         </View>
 
-        <View style={{ width: '80%', alignSelf: 'center', borderRadius: 5, padding: rs(5), shadowOffset:10}}>
+        <View style={{ borderRadius: 20, paddingVertical: rs(12), paddingHorizontal: rs(15), elevation: 2, backgroundColor: "white", marginHorizontal: rs(25) }}>
           <Text style={{ fontFamily: 'Poppins-Bold', fontSize: rs(14), color: '#000' }}>
             Active From
           </Text>
@@ -142,13 +142,15 @@ try {
           <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ fontFamily: 'Poppins-Bold', fontSize: rs(30), color: '#000' }}>{timerSeconds}</Text>
-              <Text style={{ fontFamily: 'Poppins-Bold', color: '#000' ,marginTop:rs(3)}}>Seconds</Text>
+              <View style={{ paddingLeft: rs(5), marginTop: rs(5) }}>
+                <Text style={{ fontSize: rs(11), fontFamily: 'Poppins-Bold', color: '#000', marginTop: rs(3), }}>Seconds</Text>
+              </View>
             </View>
 
-            <TouchableOpacity onPress={()=>{
+            <TouchableOpacity onPress={() => {
               startStopTimer()
-            }} style={{ backgroundColor: 'red', width: rs(110), height: rs(30), alignItems: 'center', justifyContent: 'center', borderRadius: rs(15) }}>
-              <Text style={{ fontFamily: 'Poppins-Bold', fontSize: rs(12), color: '#fff' }}>{StationTimer && StationTimer.time?"Stop":"Start"}</Text>
+            }} style={{ backgroundColor: 'red', paddingHorizontal: rs(30), height: rs(34), alignItems: 'flex-end', justifyContent: 'center', borderRadius: rs(15) }}>
+              <Text style={{ fontFamily: 'Poppins-Bold', fontSize: rs(12), color: '#fff' }}>{StationTimer && StationTimer.time ? "Stop" : "Start"}</Text>
             </TouchableOpacity>
           </View>
 

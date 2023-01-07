@@ -1,11 +1,10 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 import {
   RFValue as rs,
   RFPercentage as rp,
 } from 'react-native-responsive-fontsize';
-import { TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Disclaimer = ({ navigation }) => {
@@ -30,10 +29,10 @@ const Disclaimer = ({ navigation }) => {
         navigation.replace('selectStation')
         setVisible(true)
         // value previously stored
-      }else{
+      } else {
         setVisible(true)
       }
-  
+
     } catch (e) {
       setVisible(true)
       // error reading value
@@ -69,7 +68,7 @@ const Disclaimer = ({ navigation }) => {
 
         <Text
 
-          style={{ fontFamily: 'Poppins', fontSize: rs(13), alignSelf: 'center', width: '80%', lineHeight: rs(22), marginTop: rs(20) }}>
+          style={{ fontFamily: 'Poppins', fontSize: rs(13), alignSelf: 'center', width: '80%', lineHeight: rs(22), marginTop: rs(20), color: '#000' }}>
           The information provided by the Zdaly Fuel
           Network Optimizer app is based on historical data. Data on Zdaly Light is updated once daily at 8:00 a.m. eastern time. Any prospective information is based on that data and should not be relied on as a estimation of future performance. Any future product prices are the manufacturer's suggested retail price (MSRP) only. Sites are independent operators free to set their retail
           price.
